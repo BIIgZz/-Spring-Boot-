@@ -1,6 +1,12 @@
 package com.zzh.sell.dataobject;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zzh.sell.enums.ProductStatusEnum;
+import com.zzh.sell.utils.EnumUtil;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,6 +15,8 @@ import java.sql.Date;
 
 @Entity
 @Data
+@DynamicUpdate
+@Proxy(lazy = false)
 public class ProductInfo {
 
     @Id
@@ -33,11 +41,16 @@ public class ProductInfo {
     private  Integer categoryType;
 
     /**  状态0正常1下架*/
-    private  Integer productStatus;
+    private  Integer productStatus=ProductStatusEnum.UP.getCode();
 
     /** 更新时间*/
     private Date updateTime;
 
     /** 创建时间*/
     private  Date createTime;
+
+    @JsonIgnore
+    public ProductStatusEnum getProductStatusEnum(){
+        return EnumUtil.getByCode(productStatus,ProductStatusEnum.class);
+    }
 }
